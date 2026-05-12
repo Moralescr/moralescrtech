@@ -1,0 +1,56 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import projects from "../data/projects.json";
+---
+
+<Layout
+  title="All Projects — Moralescr Tech"
+  description="Explore all projects built by Adrián Morales — web apps, extensions, and software solutions."
+>
+  <main class="w-full flex-1">
+    <Navbar />
+
+    <div class="pt-28 pb-24 px-6 md:px-16 lg:px-24 xl:px-32 min-h-[80vh] bg-brand-dark relative overflow-hidden">
+      <!-- Background glow -->
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-secondary/[0.08] rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute bottom-20 -left-20 w-72 h-72 bg-brand-primary/[0.06] rounded-full blur-[80px] pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="mb-16 text-center">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-brand-secondary transition-colors mb-6"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+            </svg>
+            Back to home
+          </a>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+            All <span class="text-brand-secondary">Projects</span>
+          </h1>
+          <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+            A complete list of the digital solutions I've crafted — from VS Code extensions to web and mobile apps.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project) => (
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              image={project.image}
+              link={project.link}
+              github={project.github}
+              tags={project.tags}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

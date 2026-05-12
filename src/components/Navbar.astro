@@ -1,0 +1,152 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/#services", label: "Services", matchPath: "/" },
+  { href: "/projects", label: "Projects" },
+  { href: "/events", label: "Events" },
+];
+
+function isActive(link: { href: string; label: string; matchPath?: string }) {
+  if (link.href === "/events")
+    return currentPath === "/events" || currentPath === "/events/";
+  if (link.href === "/projects")
+    return currentPath === "/projects" || currentPath === "/projects/";
+  if (link.href === "/") return currentPath === "/" && link.label === "Home";
+  return false;
+}
+
+const isHome = currentPath === "/";
+---
+
+<header>
+  <div class="fixed top-0 w-full z-50 text-sm">
+    <nav
+      id="main-nav"
+      class="relative h-[70px] flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 bg-transparent text-white transition-all duration-300"
+    >
+      <div class="shrink-0 flex items-center gap-2 cursor-pointer group">
+        <div
+          class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden"
+        >
+          <img src="/logo.png" alt="Moralescr Tech logo" />
+        </div>
+        <a
+          href="/"
+          class="font-bold text-2xl tracking-tight text-brand-primary group-hover:text-brand-secondary transition-colors"
+        >
+          Moralescr Tech
+        </a>
+      </div>
+      <ul class="hidden md:flex items-center space-x-8 md:pl-28">
+        {
+          navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class={`nav-link transition-colors font-medium ${isActive(link) ? "text-brand-secondary font-bold" : "hover:text-brand-secondary"}`}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="hidden md:flex items-center"></div>
+      <button
+        id="open-menu"
+        aria-label="Open menu"
+        aria-expanded="false"
+        type="button"
+        class="inline-block md:hidden active:scale-90 transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 30 30"
+        >
+          <path
+            d="M3 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2z"
+          ></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Mobile fullscreen menu -->
+<div
+  id="mobile-navLinks"
+  class="fixed inset-0 z-[100] bg-white/80 text-slate-800 backdrop-blur-lg flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-300 -translate-x-full"
+>
+  {
+    navLinks.map((link) => (
+      <a
+        href={link.href}
+        class={`text-xl font-medium transition-colors ${isActive(link) ? "text-brand-secondary font-bold" : "hover:text-brand-secondary"}`}
+      >
+        {link.label}
+      </a>
+    ))
+  }
+  <button
+    id="close-menu"
+    aria-label="Close menu"
+    class="active:ring-3 active:ring-brand-secondary aspect-square size-10 p-1 items-center justify-center bg-slate-100 hover:bg-slate-200 transition text-black rounded-md flex mt-4"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+    >
+  </button>
+</div>
+
+<script>
+  const openMenu = document.getElementById("open-menu");
+  const closeMenu = document.getElementById("close-menu");
+  const mobileNav = document.getElementById("mobile-navLinks");
+  const nav = document.getElementById("main-nav");
+
+  // Scroll-triggered navbar solidification
+  function updateNav() {
+    if (!nav) return;
+    if (window.scrollY > 80) {
+      nav.classList.add("bg-brand-dark/80", "backdrop-blur-xl", "shadow-sm", "border-b", "border-white/[0.06]");
+      nav.classList.remove("bg-transparent");
+    } else {
+      nav.classList.remove("bg-brand-dark/80", "backdrop-blur-xl", "shadow-sm", "border-b", "border-white/[0.06]");
+      nav.classList.add("bg-transparent");
+    }
+  }
+  window.addEventListener("scroll", updateNav);
+  updateNav();
+
+  openMenu?.addEventListener("click", () => {
+    mobileNav?.classList.remove("-translate-x-full");
+    openMenu?.setAttribute("aria-expanded", "true");
+  });
+
+  closeMenu?.addEventListener("click", () => {
+    mobileNav?.classList.add("-translate-x-full");
+    openMenu?.setAttribute("aria-expanded", "false");
+  });
+
+  // Close menu when clicking a link
+  mobileNav?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileNav?.classList.add("-translate-x-full");
+      openMenu?.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>

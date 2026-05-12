@@ -1,0 +1,26 @@
+[
+  {
+    "title": "IntelliQA: RPG Linter",
+    "description": "A Visual Studio Code extension for IBM i that analyzes RPG code and identifies potential errors.",
+    "image": "/intelliqa.png",
+    "link": "",
+    "github": "https://github.com/Moralescr/intelliQA",
+    "tags": ["Typescript", "RPG", "IBM i"]
+  },
+  {
+    "title": "IntelliFastCash: ATM transactions",
+    "description": "Web application to create transactions and then execute them at the ATM.",
+    "image": "/intellifastcash.png",
+    "link": "https://intellifastcash.netlify.app/",
+    "github": "https://github.com/Moralescr/ATM-IntelliFastCash",
+    "tags": ["Vue js", "Vuetify", "RPG", "DB2"]
+  },
+  {
+    "title": "IntelliRPGLE: Snippets",
+    "description": "A Visual Studio Code extension for IBM i to auto complete RPG code",
+    "image": "/intelliRPGLE.png",
+    "link": "",
+    "github": "https://github.com/Moralescr/IntelliRPGLE",
+    "tags": ["JSON", "Snippets", "Visual Studio Code"]
+  }
+]

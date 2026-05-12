@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Build with AI",
+    "date": "2026",
+    "location": "Heredia, Costa Rica",
+    "role": "Participant",
+    "description": "Participant of sessions about AI and new technologies",
+    "image": "/buildwithai.png",
+    "link": "https://gdg.community.dev/events/details/google-gdg-pura-vida-presents-build-with-ai-pura-vida/"
+  },
+  {
+    "title": "DevFest Costa Rica",
+    "date": "2025",
+    "location": "San Jose, Costa Rica",
+    "role": "Participant",
+    "description": "Attended various sessions on cloud computing, web development, and AI.",
+    "image": "/devfest.png",
+    "link": "https://gdg.community.dev/events/details/google-gdg-pura-vida-presents-devfest-pura-vida-2025/"
+  }
+]

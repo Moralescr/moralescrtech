@@ -1,0 +1,61 @@
+---
+
+---
+
+<div class="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<style>
+  .blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .blob-1 {
+    width: 500px;
+    height: 500px;
+    background: #22A699; /* brand-secondary (teal) */
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+  }
+
+  .blob-2 {
+    width: 400px;
+    height: 400px;
+    background: #F24C3D; /* brand-primary (red) */
+    top: 50%;
+    right: -150px;
+    animation-delay: 3s;
+  }
+
+  .blob-3 {
+    width: 350px;
+    height: 350px;
+    background: #22A699; /* brand-secondary (teal) lighter */
+    bottom: -100px;
+    left: 30%;
+    animation-delay: 5s;
+    opacity: 0.2;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -30px) scale(1.05);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.95);
+    }
+  }
+</style>
+
