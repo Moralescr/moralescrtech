@@ -1,46 +1,56 @@
-# Astro Starter Kit: Basics
+# Moralescr Tech - Developer Portfolio
 
-```sh
-npm create astro@latest -- --template basics
-```
+Welcome to the repository of my personal portfolio. This project showcases my work as a **Software Developer**, highlighting my experience, recent projects, and technical skills.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The site is designed to be ultra-fast, accessible, and features a modern dark-mode aesthetic, implementing web development best practices.
 
-## 🚀 Project Structure
+## 🚀 Technologies Used
 
-Inside of your Astro project, you'll see the following folders and files:
+This project is built with modern tools to ensure optimal performance and an exceptional user experience:
+
+- **[Astro](https://astro.build/)**: Web framework optimized for speed and SEO, rendering static HTML and shipping minimal JavaScript to the client.
+- **[Tailwind CSS (v4)](https://tailwindcss.com/)**: Utility-first CSS framework used for rapid and responsive styling, layouts, and animations.
+- **TypeScript**: Static typing to ensure safe and maintainable code.
+- **Web Components & Vanilla JS**: Client-side logic, animations, and interactions (such as the "Typewriter" effect on the home screen).
+- **JSON**: Data management (services, events, technologies) separated from the UI for easy content updates.
+
+## 📁 Project Structure
+
+The source code is organized modularly for easy scalability:
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── public/                 # Static assets accessed directly (favicon.svg, images)
+├── src/
+│   ├── assets/             # Astro-optimized static resources
+│   ├── components/         # Modular and reusable components (Hero, Navbar, Footer, etc.)
+│   ├── data/               # JSON files containing web content (services.json, events.json)
+│   ├── layouts/            # Base layouts (Layout.astro with Head, Meta, and SEO tags)
+│   ├── pages/              # Application routes (index.astro, projects.astro)
+│   └── styles/             # Global styles and main Tailwind configuration
+├── package.json            # Project dependencies and Node scripts
+└── tsconfig.json           # Strict TypeScript configuration
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🧞 Local Commands
 
-## 🧞 Commands
+If you want to run this project locally, make sure you have Node.js installed, clone the repository, and run the following commands in your terminal:
 
-All commands are run from the root of the project, from a terminal:
+| Command           | Action                                                         |
+| :---------------- | :------------------------------------------------------------- |
+| `npm install`     | Installs project dependencies.                                 |
+| `npm run dev`     | Starts the local development server at `localhost:4321`.       |
+| `npm run build`   | Builds the production-ready site into the `./dist/` directory. |
+| `npm run preview` | Previews the production build locally before deploying.        |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 👨‍💻 Author
 
-## 👀 Want to learn more?
+**Adrián Morales**
+_Web Developer / Software Engineer_
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- GitHub: [Moralescr](https://github.com/Moralescr)
+- Contact: [moralescrtech@gmail.com](mailto:moralescrtech@gmail.com)
+
+---
+
+_Made with ☕ and code._
