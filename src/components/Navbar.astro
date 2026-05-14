@@ -16,8 +16,6 @@ function isActive(link: { href: string; label: string; matchPath?: string }) {
   if (link.href === "/") return currentPath === "/" && link.label === "Home";
   return false;
 }
-
-const isHome = currentPath === "/";
 ---
 
 <header>
@@ -39,7 +37,7 @@ const isHome = currentPath === "/";
           Moralescr Tech
         </a>
       </div>
-      <ul class="hidden md:flex items-center space-x-8 md:pl-28">
+      <ul class="hidden md:flex items-center space-x-8">
         {
           navLinks.map((link) => (
             <li>
@@ -67,6 +65,8 @@ const isHome = currentPath === "/";
           width="30"
           height="30"
           viewBox="0 0 30 30"
+          class="text-white"
+          fill="currentColor"
         >
           <path
             d="M3 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2z"
@@ -119,17 +119,27 @@ const isHome = currentPath === "/";
   const nav = document.getElementById("main-nav");
 
   // Scroll-triggered navbar solidification
+  const isMobile = () => window.innerWidth <= 768;
+
   function updateNav() {
     if (!nav) return;
     if (window.scrollY > 80) {
-      nav.classList.add("bg-brand-dark/80", "backdrop-blur-xl", "shadow-sm", "border-b", "border-white/[0.06]");
+      const classes = ["bg-brand-dark/80", "shadow-sm", "border-b", "border-white/[0.06]"];
+      if (!isMobile()) classes.push("backdrop-blur-xl");
+      nav.classList.add(...classes);
       nav.classList.remove("bg-transparent");
     } else {
-      nav.classList.remove("bg-brand-dark/80", "backdrop-blur-xl", "shadow-sm", "border-b", "border-white/[0.06]");
+      nav.classList.remove(
+        "bg-brand-dark/80",
+        "backdrop-blur-xl",
+        "shadow-sm",
+        "border-b",
+        "border-white/[0.06]",
+      );
       nav.classList.add("bg-transparent");
     }
   }
-  window.addEventListener("scroll", updateNav);
+  window.addEventListener("scroll", updateNav, { passive: true });
   updateNav();
 
   openMenu?.addEventListener("click", () => {
