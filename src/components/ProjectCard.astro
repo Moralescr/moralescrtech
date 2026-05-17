@@ -24,7 +24,7 @@ const { title, description, image, link, github, tags } = Astro.props;
     />
     <!-- Hover overlay (desktop only) -->
     <div
-      class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex flex-col justify-end p-5"
+      class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden xl:flex flex-col justify-end p-5"
     >
       <div class="flex gap-3">
         {
@@ -96,7 +96,7 @@ const { title, description, image, link, github, tags } = Astro.props;
     </p>
 
     <!-- Buttons always visible on mobile -->
-    <div class="flex gap-3 mb-4 md:hidden">
+    <div class="flex gap-3 mb-4 xl:hidden">
       {
         link && (
           <a
