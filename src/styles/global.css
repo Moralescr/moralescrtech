@@ -79,6 +79,19 @@
     0 0 60px rgba(34, 166, 153, 0.1);
 }
 
+/* ── Large-screen density improvements ── */
+@media (min-width: 1536px) {
+  .container-wide {
+    max-width: 1400px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .container-wide {
+    max-width: 1536px;
+  }
+}
+
 /* ── Smooth scrollbar — only on pointer devices (avoids iOS scroll-stick) ── */
 @media (hover: hover) {
   html {
