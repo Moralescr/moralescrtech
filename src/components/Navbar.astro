@@ -5,12 +5,9 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/#services", label: "Services", matchPath: "/" },
   { href: "/projects", label: "Projects" },
-  { href: "/events", label: "Events" },
 ];
 
 function isActive(link: { href: string; label: string; matchPath?: string }) {
-  if (link.href === "/events")
-    return currentPath === "/events" || currentPath === "/events/";
   if (link.href === "/projects")
     return currentPath === "/projects" || currentPath === "/projects/";
   if (link.href === "/") return currentPath === "/" && link.label === "Home";

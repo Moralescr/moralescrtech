@@ -1,11 +1,11 @@
 [
   {
     "title": "IntelliQA: RPG Linter",
-    "description": "A Visual Studio Code extension for IBM i that analyzes RPG code and identifies potential errors.",
+    "description": "Automates the RPG code review for the QA team of the CLAI PAYMENTS TECHNOLOGIES company.",
     "image": "/intelliqa.png",
     "link": "",
     "github": "https://github.com/Moralescr/intelliQA",
-    "tags": ["Typescript", "RPG", "IBM i"]
+    "tags": ["VsCode extension", "Typescript", "RPG", "IBM i"]
   },
   {
     "title": "IntelliFastCash: ATM transactions",
