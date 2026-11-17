@@ -1,0 +1,29 @@
+---
+interface Props {
+  size?: "default" | "narrow" | "wide";
+  class?: string;
+  as?: "div" | "nav" | "main" | "header" | "footer";
+}
+
+const {
+  size = "default",
+  class: className = "",
+  as: Tag = "div",
+}: Props = Astro.props;
+
+const maxWidths: Record<NonNullable<Props["size"]>, string> = {
+  default: "max-w-[1400px] 2xl:max-w-[1536px]",
+  narrow: "max-w-5xl",
+  wide: "max-w-[1600px]",
+};
+---
+
+<Tag
+  class:list={[
+    "mx-auto w-full px-6 md:px-16 lg:px-24 2xl:px-16",
+    maxWidths[size],
+    className,
+  ]}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,59 @@
+---
+import Container from "./Container.astro";
+import GlowOrb from "./GlowOrb.astro";
+
+interface Props {
+  id?: string;
+  surface?: "base" | "elevated";
+  size?: "default" | "narrow" | "wide";
+  orbs?: "none" | "default" | "subtle";
+  dividerTop?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  surface = "base",
+  size = "default",
+  orbs = "default",
+  dividerTop = false,
+  class: className = "",
+}: Props = Astro.props;
+
+const surfaceClasses: Record<NonNullable<Props["surface"]>, string> = {
+  base: "bg-brand-dark",
+  elevated: "bg-brand-elevated",
+};
+---
+
+<section
+  id={id}
+  class:list={[
+    "relative overflow-hidden py-16 lg:py-20",
+    surfaceClasses[surface],
+    className,
+  ]}
+>
+  {
+    dividerTop && (
+      <div
+        aria-hidden="true"
+        class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+      />
+    )
+  }
+
+  {
+    orbs === "default" && (
+      <>
+        <GlowOrb color="teal" position="top-right" size="lg" />
+        <GlowOrb color="coral" position="bottom-left" size="md" />
+      </>
+    )
+  }
+  {orbs === "subtle" && <GlowOrb color="teal" position="top-right" size="md" />}
+
+  <Container size={size} class="relative z-10">
+    <slot />
+  </Container>
+</section>

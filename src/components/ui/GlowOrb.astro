@@ -1,0 +1,71 @@
+---
+interface Props {
+  color?: "teal" | "coral";
+  position?:
+    | "top-right"
+    | "top-left"
+    | "bottom-left"
+    | "bottom-right"
+    | "center"
+    | "bottom-center";
+  size?: "sm" | "md" | "lg" | "xl";
+  intensity?: "subtle" | "medium" | "strong";
+  class?: string;
+}
+
+const {
+  color = "teal",
+  position = "top-right",
+  size = "md",
+  intensity = "subtle",
+  class: className = "",
+}: Props = Astro.props;
+
+const positionClasses: Record<NonNullable<Props["position"]>, string> = {
+  "top-right": "-top-40 -right-40",
+  "top-left": "top-20 -left-32",
+  "bottom-left": "-bottom-20 -left-20",
+  "bottom-right": "bottom-10 -right-32",
+  center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+  "bottom-center": "-bottom-20 left-1/2 -translate-x-1/2",
+};
+
+const sizeClasses: Record<NonNullable<Props["size"]>, string> = {
+  sm: "w-[400px] h-[400px]",
+  md: "w-[500px] h-[500px]",
+  lg: "w-[600px] h-[600px]",
+  xl: "w-[700px] h-[700px]",
+};
+
+const rgba: Record<
+  NonNullable<Props["color"]>,
+  Record<NonNullable<Props["intensity"]>, string>
+> = {
+  teal: {
+    subtle: "rgba(34, 166, 153, 0.07)",
+    medium: "rgba(34, 166, 153, 0.1)",
+    strong: "rgba(34, 166, 153, 0.18)",
+  },
+  coral: {
+    subtle: "rgba(242, 76, 61, 0.06)",
+    medium: "rgba(242, 76, 61, 0.09)",
+    strong: "rgba(242, 76, 61, 0.12)",
+  },
+};
+
+const shape = position === "bottom-center" ? "ellipse" : "circle";
+const stop = position === "center" ? "65%" : "70%";
+const background = `radial-gradient(${shape}, ${rgba[color][intensity]} 0%, transparent ${stop})`;
+---
+
+<div
+  aria-hidden="true"
+  class:list={[
+    "glow-orb pointer-events-none absolute",
+    positionClasses[position],
+    sizeClasses[size],
+    className,
+  ]}
+  style={`background: ${background};`}
+>
+</div>

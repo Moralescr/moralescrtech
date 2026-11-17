@@ -1,0 +1,130 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/ui/Section.astro";
+import Badge from "../components/ui/Badge.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import { getRoutePath, useTranslations } from "../i18n";
+
+const en = useTranslations("en");
+const es = useTranslations("es");
+
+const esPayload = JSON.stringify({
+  ...es.notFound,
+  homeHref: getRoutePath("es", "home"),
+  projectsHref: getRoutePath("es", "projects"),
+});
+---
+
+<Layout
+  lang="en"
+  title={en.notFound.title}
+  description={en.notFound.description}
+>
+  <Section class="pt-36 pb-24 min-h-[75vh] flex items-center">
+    <div
+      id="not-found-root"
+      data-es={esPayload}
+      class="max-w-2xl mx-auto text-center"
+    >
+      <div class="mb-6">
+        <Badge
+          variant="accent"
+          size="md"
+          class="text-xs font-bold tracking-[0.2em] uppercase"
+        >
+          {en.notFound.eyebrow}
+        </Badge>
+      </div>
+
+      <p
+        aria-hidden="true"
+        class="text-7xl md:text-8xl font-black tracking-tight text-gradient mb-4 select-none"
+      >
+        404
+      </p>
+
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6"
+      >
+        <span data-404-heading>{en.notFound.heading}</span>{" "}
+        <span data-404-highlight class="text-brand-secondary"
+          >{en.notFound.highlight}</span
+        >
+      </h1>
+
+      <p
+        data-404-description
+        class="text-slate-400 text-lg leading-relaxed mb-10 max-w-lg mx-auto"
+      >
+        {en.notFound.description}
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <Button
+          id="not-found-home"
+          href={getRoutePath("en", "home")}
+          variant="primary"
+          size="lg"
+        >
+          <Icon name="arrow-left" size={18} />
+          <span data-404-home-label>{en.notFound.backHome}</span>
+        </Button>
+        <Button
+          id="not-found-projects"
+          href={getRoutePath("en", "projects")}
+          variant="secondary"
+          size="lg"
+        >
+          <span data-404-projects-label>{en.notFound.viewProjects}</span>
+          <Icon name="arrow-right" size={18} />
+        </Button>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<script>
+  function localizeNotFoundPage() {
+    const root = document.getElementById("not-found-root");
+    if (!root) return;
+
+    const pathname = window.location.pathname;
+    if (pathname !== "/es" && !pathname.startsWith("/es/")) return;
+
+    const raw = root.dataset.es;
+    if (!raw) return;
+
+    const esData = JSON.parse(raw) as {
+      title: string;
+      heading: string;
+      highlight: string;
+      description: string;
+      backHome: string;
+      viewProjects: string;
+      homeHref: string;
+      projectsHref: string;
+    };
+
+    document.documentElement.lang = "es";
+    document.title = esData.title;
+
+    const headingEl = root.querySelector("[data-404-heading]");
+    const highlightEl = root.querySelector("[data-404-highlight]");
+    const descEl = root.querySelector("[data-404-description]");
+    const homeLabelEl = root.querySelector("[data-404-home-label]");
+    const projectsLabelEl = root.querySelector("[data-404-projects-label]");
+    const homeLink = document.getElementById("not-found-home");
+    const projectsLink = document.getElementById("not-found-projects");
+
+    if (headingEl) headingEl.textContent = esData.heading;
+    if (highlightEl) highlightEl.textContent = esData.highlight;
+    if (descEl) descEl.textContent = esData.description;
+    if (homeLabelEl) homeLabelEl.textContent = esData.backHome;
+    if (projectsLabelEl) projectsLabelEl.textContent = esData.viewProjects;
+    homeLink?.setAttribute("href", esData.homeHref);
+    projectsLink?.setAttribute("href", esData.projectsHref);
+  }
+
+  document.addEventListener("astro:page-load", localizeNotFoundPage);
+</script>

@@ -1,88 +1,118 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import {
+  getAlternatePath,
+  getLangFromUrl,
+  useTranslations,
+  type Locale,
+} from "../i18n";
 
 interface Props {
+  lang?: Locale;
   title?: string;
   description?: string;
   image?: string;
 }
 
 const {
-  title = "Moralescr Tech - Software Developer",
-  description = "Portfolio of Adrián Morales, a software developer specializing in web development",
+  lang = getLangFromUrl(Astro.url),
+  title,
+  description,
   image = "/logo.png",
-} = Astro.props;
+}: Props = Astro.props;
+
+const t = useTranslations(lang);
+const pageTitle = title ?? t.meta.homeTitle;
+const pageDescription = description ?? t.meta.homeDescription;
+
+const siteBase = Astro.site ?? new URL("https://moralescrtech.com");
+const canonicalUrl = new URL(Astro.url.pathname, siteBase).href;
+const ogImageUrl = new URL(image, siteBase).href;
+const esUrl = new URL(getAlternatePath(Astro.url.pathname, "es"), siteBase).href;
+const enUrl = new URL(getAlternatePath(Astro.url.pathname, "en"), siteBase).href;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content={image} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
     />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
-    <title>{title}</title>
+    <title>{pageTitle}</title>
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      document.addEventListener("astro:after-swap", () => {
+        document.documentElement.classList.add("js");
+      });
+    </script>
+    <ClientRouter />
   </head>
   <body>
-    <slot />
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-brand-cta focus:text-white focus:font-semibold focus:shadow-lg"
+    >
+      {t.nav.skipToContent}
+    </a>
+
+    <Navbar lang={lang} />
+
+    <main id="main-content" class="w-full flex-1 bg-brand-dark">
+      <slot />
+    </main>
+
+    <Footer lang={lang} />
 
     <script>
-      // Scroll Reveal Observer
-      const revealElements = document.querySelectorAll(".reveal");
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.05 },
-      );
+      let revealObserver: IntersectionObserver | null = null;
 
-      revealElements.forEach((el) => observer.observe(el));
+      function initRevealObserver() {
+        revealObserver?.disconnect();
+        const revealElements = document.querySelectorAll(".reveal:not(.visible)");
+        if (revealElements.length === 0) return;
+
+        revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                revealObserver?.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.05 },
+        );
+
+        revealElements.forEach((el) => revealObserver?.observe(el));
+      }
+
+      document.addEventListener("astro:page-load", initRevealObserver);
     </script>
-
-    <style>
-      html,
-      body {
-        margin: 0;
-        width: 100%;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        font-family: "Poppins", sans-serif;
-      }
-
-      h1,
-      h2,
-      h3 {
-        font-family: "Inter", "Poppins", sans-serif;
-      }
-    </style>
   </body>
 </html>

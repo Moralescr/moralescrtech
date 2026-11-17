@@ -1,159 +1,213 @@
 ---
+import Container from "./ui/Container.astro";
+import GlowOrb from "./ui/GlowOrb.astro";
+import Icon, { type IconName } from "./ui/Icon.astro";
+import {
+  SECTION_ANCHORS,
+  getAlternatePath,
+  getLangFromUrl,
+  getRoutePath,
+  useTranslations,
+  type Locale,
+} from "../i18n";
 
+interface Props {
+  lang?: Locale;
+}
+
+interface SocialLink {
+  name: string;
+  href: string;
+  icon: IconName;
+  hoverClass: string;
+}
+
+const { lang = getLangFromUrl(Astro.url) }: Props = Astro.props;
+const t = useTranslations(lang);
+const otherLang: Locale = lang === "es" ? "en" : "es";
+const switchHref = getAlternatePath(Astro.url.pathname, otherLang);
+const email = "moralescrtech@gmail.com";
+
+const footerLinks = [
+  { href: getRoutePath(lang, "home"), label: t.nav.home },
+  { href: SECTION_ANCHORS[lang].services, label: t.nav.services },
+  { href: getRoutePath(lang, "projects"), label: t.nav.projects },
+  { href: getRoutePath(lang, "about"), label: t.nav.about },
+];
+
+const socialLinks: SocialLink[] = [
+  {
+    name: "GitHub",
+    href: "https://github.com/moralescr",
+    icon: "github",
+    hoverClass:
+      "hover:text-white hover:bg-white/[0.08] hover:border-brand-secondary/30",
+  },
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/in/moralescr/",
+    icon: "linkedin",
+    hoverClass:
+      "hover:text-blue-400 hover:bg-blue-400/10 hover:border-blue-400/30",
+  },
+  {
+    name: "YouTube",
+    href: "https://www.youtube.com/@MoralescrTech",
+    icon: "youtube",
+    hoverClass:
+      "hover:text-red-400 hover:bg-red-400/10 hover:border-red-400/30",
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@moralescr_tech",
+    icon: "tiktok",
+    hoverClass:
+      "hover:text-white hover:bg-white/[0.08] hover:border-white/20",
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/moralescr_tech/",
+    icon: "instagram",
+    hoverClass:
+      "hover:text-pink-400 hover:bg-pink-400/10 hover:border-pink-400/30",
+  },
+];
 ---
 
 <footer
   class="bg-brand-dark border-t border-white/[0.06] relative overflow-hidden"
 >
   <!-- Background glow -->
-  <div
-    class="glow-orb absolute -bottom-20 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
-    style="background: radial-gradient(ellipse, rgba(34,166,153,0.06) 0%, transparent 70%);"
-  >
-  </div>
+  <GlowOrb
+    color="teal"
+    position="bottom-center"
+    size="lg"
+    intensity="subtle"
+    class="h-[300px]"
+  />
 
-  <div class="max-w-[1400px] 2xl:max-w-[1536px] mx-auto px-6 md:px-16 lg:px-24 xl:px-24 2xl:px-16 relative z-10">
-    <!-- Main footer content -->
-    <div
-      class="py-12 flex flex-col md:flex-row justify-between items-center gap-8"
-    >
-      <!-- Brand -->
-      <div class="flex flex-col items-center md:items-start gap-3">
-        <a href="/" class="flex items-center gap-2 group">
+  <Container class="relative z-10">
+    <!-- Main footer grid -->
+    <div class="py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <!-- Column 1: Brand -->
+      <div class="flex flex-col items-start gap-3">
+        <a
+          href={getRoutePath(lang, "home")}
+          class="flex items-center gap-2.5 group"
+        >
           <div
-            class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden group-hover:border-brand-secondary transition-colors"
+            class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden"
           >
-            <img src="/logo.png" alt="Moralescr Tech logo" />
+            <picture class="flex items-center justify-center w-full">
+              <source srcset="/logo.webp" type="image/webp" />
+              <img
+                src="/logo.png"
+                alt="Moralescr Tech logo"
+                width="48"
+                height="37"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-auto object-contain"
+              />
+            </picture>
           </div>
           <span
-            class="font-bold text-2xl tracking-tight text-white group-hover:text-brand-secondary transition-colors"
+            class="font-bold text-xl tracking-tight text-brand-primary group-hover:text-brand-secondary transition-colors"
           >
             Moralescr Tech
           </span>
         </a>
-        <p class="text-sm text-slate-500 max-w-xs text-center md:text-left">
-          Building modern digital solutions from Costa Rica
+        <p class="text-sm text-slate-400 max-w-xs leading-relaxed">
+          {t.footer.tagline}
         </p>
       </div>
 
-      <!-- Social links -->
-      <div class="flex items-center gap-5">
-        <a
-          href="https://github.com/moralescr"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08] hover:border-brand-secondary/30 hover:scale-110 transition-all duration-300"
-          aria-label="GitHub"
+      <!-- Column 2: Navigation -->
+      <div>
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.15em] text-slate-300 mb-4"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-            ></path>
-            <path d="M9 18c-4.51 2-5-2-7-2"></path>
-          </svg>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/moralescr/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 hover:border-blue-400/30 hover:scale-110 transition-all duration-300"
-          aria-label="LinkedIn"
+          {t.footer.navHeading}
+        </h2>
+        <ul class="space-y-2.5 text-sm">
+          {
+            footerLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-slate-400 hover:text-brand-secondary transition-colors"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact -->
+      <div>
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.15em] text-slate-300 mb-4"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+          {t.footer.contactHeading}
+        </h2>
+        <div class="flex flex-col items-start gap-3">
+          <a
+            href={`mailto:${email}`}
+            class="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-brand-secondary transition-colors break-all"
           >
-            <path
-              d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
-            ></path>
-            <rect width="4" height="12" x="2" y="9"></rect>
-            <circle cx="4" cy="4" r="2"></circle>
-          </svg>
-        </a>
-        <a
-          href="https://www.youtube.com/@MoralescrTech"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-red-400 hover:bg-red-400/10 hover:border-red-400/30 hover:scale-110 transition-all duration-300"
-          aria-label="YouTube"
+            <Icon name="mail" size={15} class="shrink-0 text-brand-secondary" />
+            <span>{email}</span>
+          </a>
+          <button
+            type="button"
+            data-copy-email={email}
+            data-copy-label={t.footer.copyEmail}
+            data-copied-label={t.footer.copiedEmail}
+            aria-live="polite"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-medium text-slate-300 hover:text-brand-secondary hover:border-brand-secondary/30 transition-colors active:scale-95"
+          >
+            <Icon name="copy" size={14} class="copy-icon" />
+            <Icon name="check" size={14} class="check-icon hidden text-brand-secondary" />
+            <span class="copy-text">{t.footer.copyEmail}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Column 4: Social & Language -->
+      <div>
+        <h2
+          class="text-xs font-bold uppercase tracking-[0.15em] text-slate-300 mb-4"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"
-            ></path>
-            <path d="m10 15 5-3-5-3z"></path>
-          </svg>
-        </a>
+          {t.footer.socialHeading}
+        </h2>
+        <div class="flex flex-wrap items-center gap-3 mb-5">
+          {
+            socialLinks.map((social) => (
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class:list={[
+                  "w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:scale-110 transition-all duration-300",
+                  social.hoverClass,
+                ]}
+                aria-label={social.name}
+              >
+                <Icon name={social.icon} size={18} />
+              </a>
+            ))
+          }
+        </div>
         <a
-          href="https://www.tiktok.com/@moralescr_tech"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08] hover:border-white/20 hover:scale-110 transition-all duration-300"
-          aria-label="TikTok"
+          href={switchHref}
+          hreflang={otherLang}
+          aria-label={t.nav.switchLangLabel}
+          class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-brand-secondary transition-colors"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
-          </svg>
-        </a>
-        <a
-          href="https://www.instagram.com/moralescr_tech/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-pink-400 hover:bg-pink-400/10 hover:border-pink-400/30 hover:scale-110 transition-all duration-300"
-          aria-label="Instagram"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-          </svg>
+          <Icon name="globe" size={14} />
+          <span>{t.footer.switchLangText}</span>
         </a>
       </div>
     </div>
@@ -162,12 +216,61 @@
     <div
       class="py-6 border-t border-white/[0.06] flex flex-col sm:flex-row justify-between items-center gap-4"
     >
-      <p class="text-xs text-slate-600">
-        &copy; {new Date().getFullYear()} Moralescr Tech. All rights reserved.
+      <p class="text-xs text-slate-400">
+        &copy; {new Date().getFullYear()}
+        {t.footer.rights}
       </p>
-      <p class="text-xs text-slate-600">
-        Made with <span class="text-brand-primary">❤</span> in Costa Rica
+      <p class="text-xs text-slate-400">
+        {t.footer.madeWithPrefix}
+        <span class="text-brand-primary">❤</span>
+        {t.footer.madeWithSuffix}
       </p>
     </div>
-  </div>
+  </Container>
 </footer>
+
+<script>
+  let copyTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function initFooterCopyButtons() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(
+      "button[data-copy-email]",
+    );
+
+    buttons.forEach((btn) => {
+      if (btn.dataset.bound === "true") return;
+      btn.dataset.bound = "true";
+
+      btn.addEventListener("click", async () => {
+        const email = btn.dataset.copyEmail;
+        const copyLabel = btn.dataset.copyLabel || "Copy email";
+        const copiedLabel = btn.dataset.copiedLabel || "Copied!";
+        if (!email) return;
+
+        try {
+          if (!navigator.clipboard?.writeText) return;
+          await navigator.clipboard.writeText(email);
+        } catch {
+          return;
+        }
+
+        const copyIcon = btn.querySelector(".copy-icon");
+        const checkIcon = btn.querySelector(".check-icon");
+        const textEl = btn.querySelector(".copy-text");
+
+        copyIcon?.classList.add("hidden");
+        checkIcon?.classList.remove("hidden");
+        if (textEl) textEl.textContent = copiedLabel;
+
+        if (copyTimer) clearTimeout(copyTimer);
+        copyTimer = setTimeout(() => {
+          copyIcon?.classList.remove("hidden");
+          checkIcon?.classList.add("hidden");
+          if (textEl) textEl.textContent = copyLabel;
+        }, 2000);
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initFooterCopyButtons);
+</script>

@@ -1,24 +1,42 @@
 [
   {
-    "title": "IntelliQA: RPG Linter",
-    "description": "Automates the RPG code review for the QA team of the CLAI PAYMENTS TECHNOLOGIES company.",
-    "image": "/intelliqa.png",
+    "title": {
+      "es": "IntelliQA: Linter para RPG",
+      "en": "IntelliQA: RPG Linter"
+    },
+    "description": {
+      "es": "Automatiza la revisión de código RPG para el equipo de QA de la empresa CLAI PAYMENTS TECHNOLOGIES.",
+      "en": "Automates the RPG code review for the QA team of the CLAI PAYMENTS TECHNOLOGIES company."
+    },
+    "image": "/intelliqa.webp",
     "link": "",
     "github": "https://github.com/Moralescr/intelliQA",
     "tags": ["VsCode extension", "Typescript", "RPG", "IBM i"]
   },
   {
-    "title": "IntelliFastCash: ATM transactions",
-    "description": "Web application to create transactions and then execute them at the ATM.",
-    "image": "/intellifastcash.png",
+    "title": {
+      "es": "IntelliFastCash: Transacciones ATM",
+      "en": "IntelliFastCash: ATM transactions"
+    },
+    "description": {
+      "es": "Aplicación web para crear transacciones y luego ejecutarlas en el cajero automático.",
+      "en": "Web application to create transactions and then execute them at the ATM."
+    },
+    "image": "/intellifastcash.webp",
     "link": "https://intellifastcash.netlify.app/",
     "github": "https://github.com/Moralescr/ATM-IntelliFastCash",
     "tags": ["Vue js", "Vuetify", "RPG", "DB2"]
   },
   {
-    "title": "IntelliRPGLE: Snippets",
-    "description": "A Visual Studio Code extension for IBM i to auto complete RPG code",
-    "image": "/intelliRPGLE.png",
+    "title": {
+      "es": "IntelliRPGLE: Snippets",
+      "en": "IntelliRPGLE: Snippets"
+    },
+    "description": {
+      "es": "Extensión de Visual Studio Code para IBM i que autocompleta código RPG.",
+      "en": "A Visual Studio Code extension for IBM i to auto complete RPG code"
+    },
+    "image": "/intelliRPGLE.webp",
     "link": "",
     "github": "https://github.com/Moralescr/IntelliRPGLE",
     "tags": ["JSON", "Snippets", "Visual Studio Code"]

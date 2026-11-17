@@ -1,17 +1,53 @@
 ---
-const currentPath = Astro.url.pathname;
+import Container from "./ui/Container.astro";
+import Icon from "./ui/Icon.astro";
+import {
+  SECTION_ANCHORS,
+  SECTION_IDS,
+  getAlternatePath,
+  getLangFromUrl,
+  getRoutePath,
+  useTranslations,
+  type Locale,
+} from "../i18n";
+
+interface Props {
+  lang?: Locale;
+}
+
+const { lang = getLangFromUrl(Astro.url) }: Props = Astro.props;
+const t = useTranslations(lang);
+const currentPath =
+  Astro.url.pathname === "/"
+    ? "/"
+    : Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+const otherLang: Locale = lang === "es" ? "en" : "es";
+const switchHref = getAlternatePath(Astro.url.pathname, otherLang);
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/#services", label: "Services", matchPath: "/" },
-  { href: "/projects", label: "Projects" },
+  { href: getRoutePath(lang, "home"), label: t.nav.home, key: "home" },
+  {
+    href: SECTION_ANCHORS[lang].services,
+    label: t.nav.services,
+    key: "services",
+    sectionId: SECTION_IDS[lang].services,
+  },
+  {
+    href: getRoutePath(lang, "projects"),
+    label: t.nav.projects,
+    key: "projects",
+  },
+  { href: getRoutePath(lang, "about"), label: t.nav.about, key: "about" },
 ];
 
-function isActive(link: { href: string; label: string; matchPath?: string }) {
-  if (link.href === "/projects")
-    return currentPath === "/projects" || currentPath === "/projects/";
-  if (link.href === "/") return currentPath === "/" && link.label === "Home";
-  return false;
+function normalizeHref(href: string): string {
+  return href === "/" ? "/" : href.replace(/\/+$/, "") || "/";
+}
+
+function isActive(link: { href: string; key: string }) {
+  if (link.key === "services") return false;
+  return currentPath === normalizeHref(link.href);
 }
 ---
 
@@ -19,57 +55,91 @@ function isActive(link: { href: string; label: string; matchPath?: string }) {
   <div class="fixed top-0 w-full z-50 text-sm">
     <nav
       id="main-nav"
-      class="relative h-[70px] flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-24 2xl:px-16 py-4 bg-transparent text-white transition-all duration-300"
+      aria-label={t.nav.mainNavLabel}
+      class="relative bg-transparent text-white transition-all duration-300"
     >
-      <div class="shrink-0 flex items-center gap-2 cursor-pointer group">
-        <div
-          class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden"
-        >
-          <img src="/logo.png" alt="Moralescr Tech logo" />
-        </div>
+      <Container size="wide" class="h-[70px] flex items-center justify-between">
         <a
-          href="/"
-          class="font-bold text-2xl tracking-tight text-brand-primary group-hover:text-brand-secondary transition-colors"
+          href={getRoutePath(lang, "home")}
+          class="shrink-0 flex items-center gap-2.5 group"
         >
-          Moralescr Tech
+          <div
+            class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden"
+          >
+            <picture class="flex items-center justify-center w-full">
+              <source srcset="/logo.webp" type="image/webp" />
+              <img
+                src="/logo.png"
+                alt="Moralescr Tech logo"
+                width="48"
+                height="37"
+                decoding="async"
+                class="w-full h-auto object-contain"
+              />
+            </picture>
+          </div>
+          <span
+            class="font-bold text-xl sm:text-2xl tracking-tight text-brand-primary group-hover:text-brand-secondary transition-colors"
+          >
+            Moralescr Tech
+          </span>
         </a>
-      </div>
-      <ul class="hidden md:flex items-center space-x-8">
-        {
-          navLinks.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class={`nav-link transition-colors font-medium ${isActive(link) ? "text-brand-secondary font-bold" : "hover:text-brand-secondary"}`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
 
-      <div class="hidden md:flex items-center"></div>
-      <button
-        id="open-menu"
-        aria-label="Open menu"
-        aria-expanded="false"
-        type="button"
-        class="inline-block md:hidden active:scale-90 transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          viewBox="0 0 30 30"
-          class="text-white"
-          fill="currentColor"
+        <ul class="hidden md:flex items-center space-x-8">
+          {
+            navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  data-nav-key={link.key}
+                  data-section-id={link.sectionId}
+                  aria-current={isActive(link) ? "page" : undefined}
+                  class:list={[
+                    "nav-link transition-colors font-medium",
+                    isActive(link)
+                      ? "text-brand-secondary font-bold"
+                      : "text-slate-200 hover:text-brand-secondary",
+                  ]}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="hidden md:flex items-center gap-3">
+          <a
+            href={switchHref}
+            aria-label={t.nav.switchLangLabel}
+            hreflang={otherLang}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.1] text-xs font-semibold text-slate-300 hover:text-brand-secondary hover:border-brand-secondary/30 transition-colors"
+          >
+            <Icon name="globe" size={14} />
+            <span>{t.nav.switchLangCode}</span>
+          </a>
+          <a
+            href="https://github.com/moralescr"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.1] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-brand-secondary/30 transition-colors"
+          >
+            <Icon name="github" size={18} />
+          </a>
+        </div>
+
+        <button
+          id="open-menu"
+          aria-label={t.nav.openMenu}
+          aria-controls="mobile-navLinks"
+          aria-expanded="false"
+          type="button"
+          class="inline-flex items-center justify-center p-2 rounded-lg text-white hover:bg-white/[0.08] md:hidden active:scale-95 transition"
         >
-          <path
-            d="M3 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2zm0 7a1 1 0 1 0 0 2h24a1 1 0 1 0 0-2z"
-          ></path>
-        </svg>
-      </button>
+          <Icon name="menu" size={26} />
+        </button>
+      </Container>
     </nav>
   </div>
 </header>
@@ -77,83 +147,270 @@ function isActive(link: { href: string; label: string; matchPath?: string }) {
 <!-- Mobile fullscreen menu -->
 <div
   id="mobile-navLinks"
-  class="fixed inset-0 z-[100] bg-white/80 text-slate-800 backdrop-blur-lg flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-300 -translate-x-full"
+  role="dialog"
+  aria-modal="true"
+  aria-label={t.nav.mobileNavLabel}
+  aria-hidden="true"
+  inert
+  class="fixed inset-0 z-[100] bg-brand-dark/95 text-white backdrop-blur-xl flex flex-col justify-between p-6 md:hidden transition-transform duration-300 -translate-x-full"
 >
-  {
-    navLinks.map((link) => (
-      <a
-        href={link.href}
-        class={`text-xl font-medium transition-colors ${isActive(link) ? "text-brand-secondary font-bold" : "hover:text-brand-secondary"}`}
-      >
-        {link.label}
-      </a>
-    ))
-  }
-  <button
-    id="close-menu"
-    aria-label="Close menu"
-    class="active:ring-3 active:ring-brand-secondary aspect-square size-10 p-1 items-center justify-center bg-slate-100 hover:bg-slate-200 transition text-black rounded-md flex mt-4"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+  <div class="flex items-center justify-between h-[54px]">
+    <a
+      href={getRoutePath(lang, "home")}
+      class="flex items-center gap-2.5 group"
     >
-  </button>
+      <div
+        class="w-12 h-12 flex items-center justify-center border-2 border-brand-secondary rounded-full overflow-hidden"
+      >
+        <picture class="flex items-center justify-center w-full">
+          <source srcset="/logo.webp" type="image/webp" />
+          <img
+            src="/logo.png"
+            alt="Moralescr Tech logo"
+            width="48"
+            height="37"
+            decoding="async"
+            class="w-full h-auto object-contain"
+          />
+        </picture>
+      </div>
+      <span
+        class="font-bold text-xl tracking-tight text-brand-primary group-hover:text-brand-secondary transition-colors"
+      >
+        Moralescr Tech
+      </span>
+    </a>
+
+    <button
+      id="close-menu"
+      type="button"
+      aria-label={t.nav.closeMenu}
+      class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white hover:text-brand-secondary hover:border-brand-secondary/30 transition"
+    >
+      <Icon name="close" size={22} />
+    </button>
+  </div>
+
+  <nav aria-label={t.nav.mobileNavLabel} class="flex flex-col items-center gap-7 my-auto">
+    {
+      navLinks.map((link) => (
+        <a
+          href={link.href}
+          data-nav-key={link.key}
+          data-section-id={link.sectionId}
+          aria-current={isActive(link) ? "page" : undefined}
+          class:list={[
+            "mobile-nav-link text-2xl font-semibold transition-colors",
+            isActive(link)
+              ? "text-brand-secondary"
+              : "text-slate-200 hover:text-brand-secondary",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="flex flex-col gap-3 pt-6 border-t border-white/[0.08]">
+    <a
+      href={switchHref}
+      aria-label={t.nav.switchLangLabel}
+      hreflang={otherLang}
+      class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.1] bg-white/[0.04] text-slate-200 text-sm font-semibold hover:text-brand-secondary hover:border-brand-secondary/30 transition-colors"
+    >
+      <Icon name="globe" size={16} />
+      <span>{t.nav.switchLangLabel} ({t.nav.switchLangCode})</span>
+    </a>
+    <a
+      href="https://github.com/moralescr"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="GitHub"
+      class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/[0.1] bg-white/[0.04] text-slate-200 text-sm font-semibold hover:text-white hover:bg-white/[0.08] hover:border-brand-secondary/30 transition-colors"
+    >
+      <Icon name="github" size={18} />
+      <span>GitHub</span>
+    </a>
+  </div>
 </div>
 
 <script>
-  const openMenu = document.getElementById("open-menu");
-  const closeMenu = document.getElementById("close-menu");
-  const mobileNav = document.getElementById("mobile-navLinks");
-  const nav = document.getElementById("main-nav");
+  let navAbortController: AbortController | null = null;
+  let sectionObserver: IntersectionObserver | null = null;
 
-  // Scroll-triggered navbar solidification
-  const isMobile = () => window.innerWidth <= 768;
+  function initNavigation() {
+    navAbortController?.abort();
+    sectionObserver?.disconnect();
+    navAbortController = new AbortController();
+    const { signal } = navAbortController;
 
-  function updateNav() {
-    if (!nav) return;
-    if (window.scrollY > 80) {
-      const classes = ["bg-brand-dark/80", "shadow-sm", "border-b", "border-white/[0.06]"];
-      if (!isMobile()) classes.push("backdrop-blur-xl");
-      nav.classList.add(...classes);
-      nav.classList.remove("bg-transparent");
-    } else {
-      nav.classList.remove(
-        "bg-brand-dark/80",
-        "backdrop-blur-xl",
-        "shadow-sm",
-        "border-b",
-        "border-white/[0.06]",
+    document.body.style.overflow = "";
+
+    const openMenu = document.getElementById("open-menu");
+    const closeMenu = document.getElementById("close-menu");
+    const mobileNav = document.getElementById("mobile-navLinks");
+    const nav = document.getElementById("main-nav");
+
+    const isMobile = () => window.innerWidth <= 768;
+
+    function updateNav() {
+      if (!nav) return;
+      if (window.scrollY > 80) {
+        const classes = [
+          "bg-brand-dark/80",
+          "shadow-sm",
+          "border-b",
+          "border-white/[0.06]",
+        ];
+        if (!isMobile()) classes.push("backdrop-blur-xl");
+        nav.classList.add(...classes);
+        nav.classList.remove("bg-transparent");
+      } else {
+        nav.classList.remove(
+          "bg-brand-dark/80",
+          "backdrop-blur-xl",
+          "shadow-sm",
+          "border-b",
+          "border-white/[0.06]",
+        );
+        nav.classList.add("bg-transparent");
+      }
+    }
+
+    window.addEventListener("scroll", updateNav, { passive: true, signal });
+    updateNav();
+
+    function isMenuOpen() {
+      return mobileNav !== null && !mobileNav.classList.contains("-translate-x-full");
+    }
+
+    function openMobileMenu() {
+      if (!mobileNav) return;
+      mobileNav.classList.remove("-translate-x-full");
+      mobileNav.removeAttribute("inert");
+      mobileNav.setAttribute("aria-hidden", "false");
+      openMenu?.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      closeMenu?.focus();
+    }
+
+    function closeMobileMenu(restoreFocus = true) {
+      if (!mobileNav) return;
+      mobileNav.classList.add("-translate-x-full");
+      mobileNav.setAttribute("inert", "");
+      mobileNav.setAttribute("aria-hidden", "true");
+      openMenu?.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+      if (restoreFocus) {
+        openMenu?.focus();
+      }
+    }
+
+    openMenu?.addEventListener("click", openMobileMenu, { signal });
+    closeMenu?.addEventListener("click", () => closeMobileMenu(true), { signal });
+
+    mobileNav?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => closeMobileMenu(false), { signal });
+    });
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (!isMenuOpen() || !mobileNav) return;
+
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeMobileMenu(true);
+          return;
+        }
+
+        if (event.key === "Tab") {
+          const focusables = Array.from(
+            mobileNav.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            ),
+          );
+          if (focusables.length === 0) return;
+
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+      },
+      { signal },
+    );
+
+    // Home page scroll-spy between Home and Services
+    const serviceLink = document.querySelector<HTMLAnchorElement>(
+      "a[data-section-id]",
+    );
+    const serviceSectionId = serviceLink?.dataset.sectionId;
+    const serviceSection = serviceSectionId
+      ? document.getElementById(serviceSectionId)
+      : null;
+
+    if (serviceSection) {
+      const homeLinks = document.querySelectorAll<HTMLAnchorElement>(
+        'a[data-nav-key="home"]',
       );
-      nav.classList.add("bg-transparent");
+      const serviceLinks = document.querySelectorAll<HTMLAnchorElement>(
+        'a[data-nav-key="services"]',
+      );
+
+      const setActiveGroup = (activeKey: "home" | "services") => {
+        homeLinks.forEach((el) => {
+          const isDesktop = el.classList.contains("nav-link");
+          if (activeKey === "home") {
+            el.setAttribute("aria-current", "page");
+            el.classList.add("text-brand-secondary");
+            if (isDesktop) el.classList.add("font-bold");
+            el.classList.remove("text-slate-200");
+          } else {
+            el.removeAttribute("aria-current");
+            el.classList.remove("text-brand-secondary", "font-bold");
+            el.classList.add("text-slate-200");
+          }
+        });
+
+        serviceLinks.forEach((el) => {
+          const isDesktop = el.classList.contains("nav-link");
+          if (activeKey === "services") {
+            el.setAttribute("aria-current", "true");
+            el.classList.add("text-brand-secondary");
+            if (isDesktop) el.classList.add("font-bold");
+            el.classList.remove("text-slate-200");
+          } else {
+            el.removeAttribute("aria-current");
+            el.classList.remove("text-brand-secondary", "font-bold");
+            el.classList.add("text-slate-200");
+          }
+        });
+      };
+
+      sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveGroup("services");
+            } else if (entry.boundingClientRect.top > 0) {
+              setActiveGroup("home");
+            }
+          });
+        },
+        { rootMargin: "-25% 0px -55% 0px" },
+      );
+
+      sectionObserver.observe(serviceSection);
     }
   }
-  window.addEventListener("scroll", updateNav, { passive: true });
-  updateNav();
 
-  openMenu?.addEventListener("click", () => {
-    mobileNav?.classList.remove("-translate-x-full");
-    openMenu?.setAttribute("aria-expanded", "true");
-  });
-
-  closeMenu?.addEventListener("click", () => {
-    mobileNav?.classList.add("-translate-x-full");
-    openMenu?.setAttribute("aria-expanded", "false");
-  });
-
-  // Close menu when clicking a link
-  mobileNav?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileNav?.classList.add("-translate-x-full");
-      openMenu?.setAttribute("aria-expanded", "false");
-    });
-  });
+  document.addEventListener("astro:page-load", initNavigation);
 </script>

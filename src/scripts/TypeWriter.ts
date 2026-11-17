@@ -3,23 +3,49 @@ class TypeWriter extends HTMLElement {
   textIndex = 0;
   charIndex = 0;
   isDeleting = false;
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  private prefersReducedMotion(): boolean {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
 
   connectedCallback() {
+    this.clearTimer();
     this.texts = JSON.parse(this.dataset.phrases || "[]");
     if (this.texts.length === 0) return;
 
     this.textIndex = 0;
     this.charIndex = this.texts[0].length;
     this.isDeleting = false;
+    this.textContent = this.texts[0];
+
+    if (this.prefersReducedMotion()) return;
 
     // Start deleting after the initial delay
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this.isDeleting = true;
       this.type();
     }, 2500);
   }
 
+  disconnectedCallback() {
+    this.clearTimer();
+  }
+
+  private clearTimer() {
+    if (this.timeoutId !== null) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+  }
+
   type() {
+    if (this.prefersReducedMotion()) {
+      this.textContent = this.texts[this.textIndex] || "";
+      this.clearTimer();
+      return;
+    }
+
     const currentText = this.texts[this.textIndex];
 
     if (this.isDeleting) {
@@ -41,8 +67,10 @@ class TypeWriter extends HTMLElement {
       typeSpeed = 500;
     }
 
-    setTimeout(() => this.type(), typeSpeed);
+    this.timeoutId = setTimeout(() => this.type(), typeSpeed);
   }
 }
 
-customElements.define("type-writer", TypeWriter);
+if (!customElements.get("type-writer")) {
+  customElements.define("type-writer", TypeWriter);
+}

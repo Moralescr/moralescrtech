@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProjectCard from "./ProjectCard.astro";
+import Section from "./ui/Section.astro";
+import SectionHeader from "./ui/SectionHeader.astro";
+import projects from "../data/projects.json";
+import { getRoutePath, useTranslations, type Locale } from "../i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+interface ProjectData {
+  title: Record<Locale, string>;
+  description: Record<Locale, string>;
+  image: string;
+  link: string;
+  github: string;
+  tags: string[];
+}
+
+const { lang }: Props = Astro.props;
+const t = useTranslations(lang);
+const projectList = projects as ProjectData[];
+---
+
+<Layout
+  lang={lang}
+  title={t.meta.projectsTitle}
+  description={t.meta.projectsDescription}
+>
+  <Section class="pt-28 pb-24 min-h-[80vh]">
+    <SectionHeader
+      as="h1"
+      eyebrow={t.projects.allEyebrow}
+      title={t.projects.allTitle}
+      highlight={t.projects.allHighlight}
+      description={t.projects.allDescription}
+      backHref={getRoutePath(lang, "home")}
+      backLabel={t.projects.backHome}
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {
+        projectList.map((project) => (
+          <ProjectCard
+            lang={lang}
+            title={project.title[lang]}
+            description={project.description[lang]}
+            image={project.image}
+            link={project.link}
+            github={project.github}
+            tags={project.tags}
+          />
+        ))
+      }
+    </div>
+  </Section>
+</Layout>
